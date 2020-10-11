@@ -1,4 +1,4 @@
-# tube_stack
+# tube_stack (Sample app)
 
 Stack your favorite videos
 
