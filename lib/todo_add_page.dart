@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'youtubeData.dart';
+import 'package:tube_stack/database/database.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class TodoAddPage extends StatefulWidget {
   @override
@@ -35,9 +36,21 @@ class _TodoAddPageState extends State<TodoAddPage> {
               child: RaisedButton(
                 color: Colors.blue,
                 onPressed: (){
-                  Future<YoutubeData> future = getTitle(_text);
+                  Future<RecordModel> future = getTitle(_text);
                   future.then((data) => setState((){
-                    Navigator.of(context).pop(data);
+                    if(data != null){
+                      Navigator.of(context).pop(data);
+                    }else{
+                      Fluttertoast.showToast(
+                          msg: "Can't add it to the list.",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 14.0
+                      );
+                    }
                   }));
                 },
                 child: Text('リスト追加', style: TextStyle(color: Colors.white)),
@@ -62,10 +75,15 @@ class _TodoAddPageState extends State<TodoAddPage> {
     );
   }
 
-  Future<YoutubeData> getTitle(String url) async {
+  Future<RecordModel> getTitle(String url) async {
     if(url.isEmpty) return null;
     var jsonData = await getDetail(url);
-    return YoutubeData(url, jsonData['title'], jsonData['thumbnail_url']);
+    if(jsonData != null){
+      return RecordModel(jsonData['title'], url, jsonData['thumbnail_url']);
+    }else{
+      return null;
+    }
+
   }
 
   Future<dynamic> getDetail(String userUrl) async {

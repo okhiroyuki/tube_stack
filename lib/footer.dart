@@ -13,6 +13,7 @@ class BottomNavigationBarExample extends StatefulWidget {
 
 class _BottomNavigationBarExampleState
     extends State<BottomNavigationBarExample> {
+
   var currentTab = [
     Home(),
     Timeline(),
